@@ -21,24 +21,25 @@
 
 
 <script setup>
-import {watch, ref } from 'vue'
-import SearchIcon from '@/components/icons/SearchIcon.vue'
+  import {watch, ref } from 'vue'
+  import SearchIcon from '@/components/icons/SearchIcon.vue'
 
-const props = defineProps({
-  modelValue: String
-})
-const emit = defineEmits(['update:modelValue'])
+  const props = defineProps({
+    modelValue: String
+  })
 
-// Create a local ref to use with v-model
-const inputValue = ref(props.modelValue)
+  const emit = defineEmits(['update:modelValue'])
 
-// Watch for external changes
-watch(() => props.modelValue, newVal => {
-  inputValue.value = newVal
-})
+  // Create a local ref to use with v-model
+  const inputValue = ref(props.modelValue)
 
-// Emit on input
-watch(inputValue, (newVal) => {
-  emit('update:modelValue', newVal)
-})
+  // Watch for external changes
+  watch(() => props.modelValue, newVal => {
+    inputValue.value = newVal
+  })
+
+  // Emit on input
+  watch(inputValue, (newVal) => {
+    emit('update:modelValue', newVal)
+  })
 </script>

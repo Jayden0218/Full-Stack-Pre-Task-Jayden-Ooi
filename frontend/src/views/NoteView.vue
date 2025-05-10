@@ -7,6 +7,7 @@
 
     <SearchView v-model="searchQuery"/>
 
+    <!-- Show info to user -->
     <h1 class="oswald-font text-gray-500" v-if="notes.length === 0">
       Welcome to File Management System! Try Adding your first File!
     </h1>
@@ -16,8 +17,6 @@
     <h1 class="oswald-font text-gray-500" v-else>
       Here are your files. Start managing them efficiently!
     </h1>
-
-
 
     <!-- Height Spacing -->
     <div class="h-10" />
@@ -113,143 +112,156 @@
 </template>
 
 <script setup>
-import { ref, computed,onMounted } from 'vue'
-import { formatDate } from '@/utils/dateUtils'
-import SearchView from '../components/SearchComponent.vue'
-import XIcon from '@/components/icons/xIcon.vue';
-import HeaderView from '@/components/HeaderComponent.vue'
-import NoteGridView from '@/components/NoteGridComponent.vue'
-import ButtonComponent from '@/components/ButtonComponent.vue'
-import { deleteNote as deleteNoteAPI } from '@/components/method/noAuth/delete.js'
-import { createNote as createNoteAPI } from '@/components/method/noAuth/post.js'
-import { updateNote as updateNoteAPI } from '@/components/method/noAuth/put.js'
-import { getNote as getNoteAPI } from '@/components/method/noAuth/get.js'
-import { getNoteAuth as getNoteAuthAPI } from '@/components/method/withAuth/getAuth.js'
-import { createNoteAuth as createNoteAuthAPI } from '@/components/method/withAuth/postAuth.js'
-import { updateNoteAuth as updateNoteAuthAPI } from '@/components/method/withAuth/putAuth.js'
-import { deleteNoteAuth as deleteNoteAuthAPI } from '@/components/method/withAuth/deleteAuth.js'
+  import { ref, computed,onMounted } from 'vue'
+  import { formatDate } from '@/utils/dateUtils'
+  import SearchView from '../components/SearchComponent.vue'
+  import XIcon from '@/components/icons/xIcon.vue';
+  import HeaderView from '@/components/HeaderComponent.vue'
+  import NoteGridView from '@/components/NoteGridComponent.vue'
+  import ButtonComponent from '@/components/ButtonComponent.vue'
+  import { deleteNote as deleteNoteAPI } from '@/components/method/noAuth/delete.js'
+  import { createNote as createNoteAPI } from '@/components/method/noAuth/post.js'
+  import { updateNote as updateNoteAPI } from '@/components/method/noAuth/put.js'
+  import { getNote as getNoteAPI } from '@/components/method/noAuth/get.js'
+  import { getNoteAuth as getNoteAuthAPI } from '@/components/method/withAuth/getAuth.js'
+  import { createNoteAuth as createNoteAuthAPI } from '@/components/method/withAuth/postAuth.js'
+  import { updateNoteAuth as updateNoteAuthAPI } from '@/components/method/withAuth/putAuth.js'
+  import { deleteNoteAuth as deleteNoteAuthAPI } from '@/components/method/withAuth/deleteAuth.js'
 
-const url = 'http://localhost:4000/notes';
-const authUrl = 'http://localhost:4000/auth/notes';
+  // url for normal connection
+  const url = 'http://localhost:4000/notes';
+  // url when user already authenticate
+  const authUrl = 'http://localhost:4000/auth/notes';
+  // Check user logIn status to show text info
+  const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
 
-const isLoggedIn = computed(() => !!localStorage.getItem('authToken'));
-
-
-const notes = ref([])
-const searchQuery = ref('')
-const showPopup = ref(false)
-const editing = ref(false)
-const noteTemplate = ref({ title: '', content: ''})
-const colors = ['#ACDDDE', '#CAF1DE', '#E1F8DC', '#FEF8DD', '#FFE7C7','#F7D8BA']
-const selectedColor = ref('#ef4444') // Start with red
-
-// Use to filter out in the search
-const filteredNotes = computed(() =>
-  notes.value.filter(n =>
-    n.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    n.content.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-)
-
-// Text Editing Controller
-const currentForm = computed({
-  get: () => (editing.value ? noteTemplate.value : noteTemplate.value),
-  set: v => {
-    if (editing.value) noteTemplate.value = v
-    else noteTemplate.value = v
-  }
-})
-
-// First save window for note
-function openAddPopup() {
-  noteTemplate.value = { title: '', content: ''}
-  selectedColor.value = colors[0] // Always set the first color to be selected
-  editing.value = false
-  showPopup.value = true
-}
-
-// Edit window for note
-function openEditPopup(note) {
-  noteTemplate.value = { ...note }
-  selectedColor.value = note.color || '#ef4444'
-  editing.value = true
-  showPopup.value = true
-}
-
-function closePopup() {
-  showPopup.value = false
-}
-
-// Select color function
-function selectColor(color) {
-  selectedColor.value = color
-  currentForm.value.color = color
-}
-
-function createNote() {
-   const token = localStorage.getItem('authToken')
-  if (token) {
-    console.log("auth")
-    const email = localStorage.getItem('email');
-    createNoteAuthAPI(noteTemplate.value, selectedColor.value, notes, closePopup, authUrl,token,email)
-     console.log("auth")
-  }
-  else {
-    const identification = localStorage.getItem('identification')
-    createNoteAPI(noteTemplate.value, selectedColor.value, notes, closePopup,url,identification)
-    console.log("no auth createnote")
-  }
-}
-
-function getNote() {
-  const token = localStorage.getItem('authToken')
-  console.log("auth")
-  if (token) {
-    const email = localStorage.getItem('email');
-    getNoteAuthAPI(authUrl, notes, closePopup, token,email)
-    console.log("auth")
-  }
-  else {
-    const identification = localStorage.getItem('identification')
-    getNoteAPI(url, notes, closePopup,identification)
-    console.log("no auth")
-  }
-}
-
-function updateNote() {
-  const token = localStorage.getItem('authToken')
+  // Use to save all note inserted
+  const notes = ref([])
+  // Use to save search query
+  const searchQuery = ref('')
+  // Check pop up window
+  const showPopup = ref(false)
+  // Check the word typed
+  const editing = ref(false)
+  // Template for easy reuse
+  const noteTemplate = ref({ title: '', content: '' })
+  // Color selection available
+  const colors = ['#ACDDDE', '#CAF1DE', '#E1F8DC', '#FEF8DD', '#FFE7C7', '#F7D8BA']
+  // Save the selected color user selected
+  const selectedColor = ref('') 
   
-  if (token) {
-    console.log("auth")
-    const email = localStorage.getItem('email');
-    updateNoteAuthAPI(noteTemplate.value, notes, selectedColor.value, authUrl, closePopup,token,email)
-   console.log("auth")
-  }
-  else {
-    const identification = localStorage.getItem('identification')
-    updateNoteAPI(noteTemplate.value, notes,selectedColor.value,url,closePopup,identification)
-    console.log("no auth update")
-  }
-}
+  // Use to filter out in the search
+  const filteredNotes = computed(() =>
+    notes.value.filter(n =>
+      n.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      n.content.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  )
 
-function deleteNote(deletedId) {
-  const token = localStorage.getItem('authToken')
-  if (token) {
-    deleteNoteAuthAPI(deletedId, authUrl, notes,token)
-   console.log("auth")
+  // Check form text
+  const currentForm = computed({
+    get: () => (editing.value ? noteTemplate.value : noteTemplate.value),
+    set: v => {
+      if (editing.value) noteTemplate.value = v
+      else noteTemplate.value = v
+    }
+  })
+
+  // --------------------------------------
+  // Pop up window function
+  // --------------------------------------
+
+  // Run when user start create a note
+  function openAddPopup() {
+    noteTemplate.value = { title: '', content: ''}
+    selectedColor.value = colors[0]
+    editing.value = false
+    showPopup.value = true
   }
-  else {
-    deleteNoteAPI(deletedId, url, notes)
-    console.log("no auth")
+
+  // Run when user edit a note
+  function openEditPopup(note) {
+    noteTemplate.value = { ...note }
+    selectedColor.value = note.color || colors[0]
+    editing.value = true
+    showPopup.value = true
   }
-}
 
+  // Close pop up
+  function closePopup() {
+    showPopup.value = false
+  }
 
+  // Select color function
+  function selectColor(color) {
+    selectedColor.value = color
+    currentForm.value.color = color
+  }
 
-onMounted(() => {
-  console.log("run get note")
-  getNote(); 
-});
+  // --------------------------------------
+  // CRUD Method
+  // --------------------------------------
+
+  // Create note
+  function createNote() {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      console.log("auth")
+      const email = localStorage.getItem('email');
+      createNoteAuthAPI(noteTemplate.value, selectedColor.value, notes, closePopup, authUrl,token,email)
+    }
+    else {
+      const identification = localStorage.getItem('identification')
+      createNoteAPI(noteTemplate.value, selectedColor.value, notes, closePopup,url,identification)
+      console.log("no auth createnote")
+    }
+  }
+
+  // Get note
+  function getNote() {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      const email = localStorage.getItem('email');
+      getNoteAuthAPI(authUrl, notes, closePopup, token,email)
+      console.log("auth")
+    }
+    else {
+      const identification = localStorage.getItem('identification')
+      getNoteAPI(url, notes, closePopup,identification)
+      console.log("no auth")
+    }
+  }
+  // Update note
+  function updateNote() {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      console.log("auth")
+      const email = localStorage.getItem('email');
+      updateNoteAuthAPI(noteTemplate.value, notes, selectedColor.value, authUrl, closePopup,token,email)
+    }
+    else {
+      const identification = localStorage.getItem('identification')
+      updateNoteAPI(noteTemplate.value, notes,selectedColor.value,url,closePopup,identification)
+      console.log("no auth update")
+    }
+  }
+
+  // Delete note
+  function deleteNote(deletedId) {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      deleteNoteAuthAPI(deletedId, authUrl, notes,token)
+      console.log("auth")
+    }
+    else {
+      deleteNoteAPI(deletedId, url, notes)
+      console.log("no auth")
+    }
+  }
+  // Update the latest note
+  onMounted(() => {
+    getNote(); 
+  });
 </script>
 
 

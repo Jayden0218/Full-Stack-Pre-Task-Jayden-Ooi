@@ -33,18 +33,18 @@
 </template>
 
 <script setup>
-    import signBoard2 from '@/assets/note3.png'
+  import signBoard2 from '@/assets/note3.png'
 
-    // Get the userName from localStorage
-    let userName = localStorage.getItem('name')
+  // Get the userName from localStorage
+  let userName = localStorage.getItem('name')
 
-    function logout() {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('email');
-        localStorage.removeItem('name');
-        console.log('User logged out');
+  function logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('email');
+      localStorage.removeItem('name');
+      console.log('User logged out');
 
-        // Optional: Redirect to login or home page
-        window.location.href = '/';
-      }
+      // Redirect to start page
+      window.location.href = '/';
+    }
 </script>

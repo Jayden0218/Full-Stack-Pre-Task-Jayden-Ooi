@@ -1,6 +1,6 @@
-<script setup lang="ts">
-import { TresCanvas, useRenderLoop, extend } from '@tresjs/core'
-import { shallowRef, ref, onMounted, watch, computed } from 'vue'
+<script setup>
+import { TresCanvas,extend } from '@tresjs/core'
+import { shallowRef, ref, onMounted, watch } from 'vue'
 import { OrbitControls } from '@tresjs/cientos'
 import gsap from 'gsap'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
@@ -12,12 +12,6 @@ extend({ TextGeometry })
 const font = ref(null)
 const textArray = ['M','A','N','A', 'G', 'E', 'M', 'E', 'N', 'T', 'F', 'I', 'L', 'E']
 const zs = [-4.5,-4,-3.5,-3,-2.5,-2,-1.5,-1,-0.5,0,1,1.5, 2,2.5,  ] 
-
-
-// const zs = []
-// for (let z = -4.5; z <= 2.5; z++) {
-//   zs.push(z)
-// }
 
 const fontOptions = {
   size: 0.5,

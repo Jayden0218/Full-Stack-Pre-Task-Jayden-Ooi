@@ -31,8 +31,6 @@ export async function updateNoteAuth(noteTemplate, notes,selectedColor,authUrl,c
       body: JSON.stringify(noteUpdated)
     });
 
-    
-
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
 
@@ -40,9 +38,6 @@ export async function updateNoteAuth(noteTemplate, notes,selectedColor,authUrl,c
 
     const result = await response.json();
     notes.value[index] = noteUpdated
-    
-    // Add to local state
-    // notes.value.push(result);
     console.log('Note updated to backend:', result);
   } catch (error) {
     console.error('Failed to save note:', error);

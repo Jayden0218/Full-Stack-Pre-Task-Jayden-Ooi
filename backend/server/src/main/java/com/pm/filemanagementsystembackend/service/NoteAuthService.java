@@ -31,7 +31,8 @@ public class NoteAuthService {
     }
 
     public NoteResponseDTO updateNoteAuth(UUID id, NoteRequestDTO noteRequestDTO) {
-        Note note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException("Note not found with ID: " + id));
+        Note note = noteRepository.findById(id)
+                .orElseThrow(() -> new NoteNotFoundException("Note not found with ID: " + id));
 
         note.setTitle(noteRequestDTO.getTitle());
         note.setContent(noteRequestDTO.getContent());
@@ -45,8 +46,5 @@ public class NoteAuthService {
     public void deleteNoteAuth(UUID id) {
         noteRepository.deleteById(id);
     }
-
-
-
 
 }

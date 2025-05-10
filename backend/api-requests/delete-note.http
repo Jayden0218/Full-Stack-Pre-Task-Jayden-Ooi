@@ -1,4 +1,4 @@
-### CREATE note from server
+### DELETE note from server
 DELETE http://localhost:4000/notes/e0db11a5-1223-4bb3-8222-8d6165e46a43
 Content-Type:application/json
 

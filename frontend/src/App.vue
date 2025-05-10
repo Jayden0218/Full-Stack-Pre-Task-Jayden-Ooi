@@ -1,77 +1,62 @@
 <template>
-  <header>
-    <div class="wrapper">
-
-      <nav>
-        <!-- <RouterLink to="/" /> -->
-        <!-- <RouterLink to="/account">About</RouterLink> -->
-      </nav>
-    </div>
-  </header>
-
+  <!-- When application start, go to the page route -->
   <RouterView />
 </template>
 
 <script setup>
-import { RouterView, useRouter } from 'vue-router'
+  import { RouterView, useRouter } from 'vue-router'
+  import { onMounted } from 'vue';
 
-import { onMounted } from 'vue';
+  const router = useRouter();
+  const url = 'http://localhost:4000';
+  const token = localStorage.getItem('authToken')
 
-const router = useRouter();
+  // Validate the token to see user have token
+  async function validateToken() {
+    try {
+      const response = await fetch(`${url}/validate`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
 
-onMounted(() => {
-  validateToken();
-});
+      if(response.status == 401){
+        const now = new Date();
 
-const url = 'http://localhost:4000';
+        let identification = localStorage.getItem('identification');
+        console.log(identification)
 
-const token = localStorage.getItem('authToken')
+        if(!identification){
+          localStorage.setItem('identification',now.toString())
+        }
 
-// console.log(token)
-
-async function validateToken() {
-  try {
-    const response = await fetch(`${url}/validate`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-    });
-
-    if(response.status == 401){
-      const now = new Date();
-
-      let identification = localStorage.getItem('identification');
-      console.log(identification)
-
-      if(!identification){
-        localStorage.setItem('identification',now.toString())
+        router.push('/home');
+        return
       }
 
+      if (!response.ok) {
+        console.log('Error during token validation:', response.status);
+        return;
+        
+      } 
+      console.log('Token is still useful',);
       router.push('/home');
-      return
+
+    } catch (error) {
+      console.error('Failed token:', error);
     }
-
-    if (!response.ok) {
-      console.log('Error during token validation:', response.status);
-      return;
-      
-    } 
-    console.log('Token is still useful',);
-    router.push('/home');
-
-    
-  } catch (error) {
-    console.error('Failed token:', error);
   }
-}
+
+  // Every time application start, run this function
+  onMounted(() => {
+    validateToken();
+  });
+
 
 
 </script>
 
 
-<!-- 
-<template>
-  <NoteView/>
-</template> -->
+
 

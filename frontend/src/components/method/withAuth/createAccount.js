@@ -24,11 +24,9 @@ export async function createAccount(email, password,name, authUrl,router,identif
     const result = await response.json();
     console.log('Login successful:', result);
 
-    // Assuming the token is in the 'token' field in the response
     const token = result.token;
 
-    // Save the token to localStorage (or sessionStorage)
-    localStorage.setItem('authToken', token);  // Or use sessionStorage.setItem('authToken', token);
+    localStorage.setItem('authToken', token);  
     localStorage.setItem('email', email);
     localStorage.setItem('name',name)
 

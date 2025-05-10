@@ -18,12 +18,13 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
 
-    public AuthController(AuthService authService) {this.authService = authService;}
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseLoginDTO> login(
-            @RequestBody AuthRequestLoginDTO authRequestLoginDTO
-    ) {
+            @RequestBody AuthRequestLoginDTO authRequestLoginDTO) {
         Optional<AuthResponseLoginDTO> tokenOptional = authService.authenticateLogIn(authRequestLoginDTO);
 
         if (tokenOptional.isEmpty() || tokenOptional.get().token().isEmpty()) {
@@ -34,16 +35,14 @@ public class AuthController {
 
         authService.changeIdentification(authRequestLoginDTO);
 
-
         String token = authResponseLoginDTO.token();
         String name = authResponseLoginDTO.name();
-        return ResponseEntity.ok(new AuthResponseLoginDTO(token,name));
+        return ResponseEntity.ok(new AuthResponseLoginDTO(token, name));
     }
 
     @PostMapping("/create")
     public ResponseEntity<AuthResponseCreateDTO> create(
-            @RequestBody AuthRequestCreateDTO authRequestCreateDTO
-    ) {
+            @RequestBody AuthRequestCreateDTO authRequestCreateDTO) {
         Optional<String> tokenOptional = authService.authenticateCreate(authRequestCreateDTO);
 
         if (tokenOptional.isEmpty()) {
@@ -55,16 +54,15 @@ public class AuthController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<Void> validateToken(@RequestHeader("Authorization") String authHeader){
+    public ResponseEntity<Void> validateToken(@RequestHeader("Authorization") String authHeader) {
         log.info("2. starting to check");
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             log.info("2. check fail");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return authService.validateToken(authHeader.substring(7))
-                ?ResponseEntity.ok().build()
-                :ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
 
 }

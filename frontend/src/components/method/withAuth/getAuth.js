@@ -2,8 +2,6 @@
 
 export  async function getNoteAuth(authUrl, notes,closePopup,token,email) {
   try {
-
-
     const response = await fetch(`${authUrl}/${email}`, {
       method: 'GET',
       headers: {
@@ -16,7 +14,6 @@ export  async function getNoteAuth(authUrl, notes,closePopup,token,email) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // ✅ Extract and use the JSON data
     const result = await response.json();
     console.log('Fetched notes from backend:', result);
     result.forEach(note => {
