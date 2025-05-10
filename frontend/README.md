@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Full-Stack-Pre-Task-Jayden-Ooi
-=======
 # FMS
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -36,4 +33,3 @@ npm run build
 ```sh
 npm run lint
 ```
->>>>>>> 63a8bd5 (Done on CURD operation on frontend)

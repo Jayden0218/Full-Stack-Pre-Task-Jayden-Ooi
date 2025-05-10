@@ -1,12 +1,13 @@
 <template>
-  <div class="flex flex-wrap justify-center gap-4">
+  <div class="flex flex-wrap justify-center gap-4 w-full">
     <div
       v-for="note in notes"
       :key="note.id"
       @click="handleNoteClick(note)"
-      class="w-1/4 p-4 border border-gray-300 rounded-lg shadow-lg cursor-pointer hover:shadow-2xl transition"
+      class="w-1/4 p-4 border border-gray-300 rounded-lg shadow-lg cursor-pointer hover:shadow-2xl transition min-w-40 max-w-70 flex flex-col justify-between"
       :style="{ backgroundColor: note.color || '#ffffff' }"
     >
+    <div>
       <!-- Title -->
       <div class="font-semibold text-lg mb-2 break-words whitespace-normal">
         {{ note.title }}
@@ -16,6 +17,8 @@
       <div class="text-gray-600 mb-2 break-words whitespace-normal">
         {{ note.content }}
       </div>
+    </div>
+    <div>
 
       <!-- Bottom row -->
       <div class="flex flex-row justify-between">
@@ -32,12 +35,12 @@
           <DeleteIcon />
         </button>
       </div>
+        </div>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { defineProps, defineEmits } from 'vue'
   import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 
   // Props
