@@ -19,14 +19,18 @@ This is the main page where your notes and files are displayed.
 
 ## How to Run ⚙️
 
-1. Open your terminal and run the following command:
+1. Clone this github repository.
+
+2. Ensure Docker is running on your desktop.
+
+3. Open your terminal and run the following command:
 
    ```bash
    ./main.sh
 
    ```
 
-2. Open your browser and go to:
+4. Open your browser and go to:
    http://localhost:5173
 
 Let me know if you'd like any more edits.
