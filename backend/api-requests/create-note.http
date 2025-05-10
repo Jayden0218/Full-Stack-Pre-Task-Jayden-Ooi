@@ -1,0 +1,27 @@
+#### CREATE note from server
+POST http://localhost:4000/notes
+Content-Type:application/json
+
+{
+  "title": "First Post",
+  "content": "First Description",
+  "color": "#ef4444",
+  "createdAt": "1985-06-15 23:43:24",
+  "updatedAt": "1985-06-15 23:43:24"
+}
+
+####
+### CREATE note from server
+POST http://localhost:4000/auth/notes
+Authorization: Bearer {{token}}
+Content-Type:application/json
+
+
+{
+  "title": "First Post",
+  "content": "First Description",
+  "color": "#ef4444",
+  "createdAt": "1985-06-15 23:43:24",
+  "updatedAt": "1985-06-15 23:43:24"
+}
+
